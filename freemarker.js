@@ -107,6 +107,14 @@ module.exports = {
 		}}
 
 	},
+	builtin: {
+		'upper_case': function(cmd) {
+			return cmd.cmd = cmd.cmd + ".toUpperCase()";
+		},
+		'lower_case': function(cmd) {
+			return cmd.cmd = cmd.cmd + ".toLowerCase()";
+		}
+	},
 	_o : function(cmd) {
 		return "p.push(\"" + escape(cmd) + "\");";
 	},
@@ -126,6 +134,14 @@ module.exports = {
 			buf.push("this._vars.", p, " = this['", p, "'];\n");
 		}
 		return buf.join('');
+	},
+	
+	splitCmdAndBuiltin: function(cmd) {
+		var res = cmd.split("?");
+		return {
+				cmd:     res[0],
+				builtin: res[1]
+		};
 	},
 
 	nextToken: function(template) {
@@ -162,7 +178,11 @@ module.exports = {
 			
 			parts.push(this._o(template.engine.substring(template.pos, token.newPos)));
 			if (token.symbol.process) {
-				move_pos = token.symbol.process(parts, template.engine.substring(token.start, token.endPos), template);
+				var cmd = this.splitCmdAndBuiltin(template.engine.substring(token.start, token.endPos));
+				if(cmd.builtin != undefined) {
+					this.builtin[cmd.builtin](cmd);
+				}
+				move_pos = token.symbol.process(parts, cmd.cmd, template);
 			}
 			
 			if (move_pos == true) {
