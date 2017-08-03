@@ -1,3 +1,5 @@
+const path = require('path');
+
 // Copyright 2009 amplafi.com, Andreas Andreou
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var freemarker = {
+module.exports = {
 	// Currently supports:
 	// - basic interpolations
 	// - directives:
@@ -36,42 +38,74 @@ var freemarker = {
 	// - string builtin for booleans, i.e. boolean?string("yes", "no")
 	// - t, lt, rt, nt directives (or atleast ignore them)
 	symbols: {	
-		'replace': {start:'${', end:'}', process:function(parts, cmd) {
+		'replace': {start:'${', end:'}', process:function(parts, cmd, template) {
 			parts.push(freemarker._p(cmd));
+
+			return true;
 		}},
-		'if': {start:'<#if', end:'>', process:function(parts, cmd) {
+
+		'if': {start:'<#if', end:'>', process:function(parts, cmd, template) {
 			if (cmd.indexOf('??')>=0) {
 				var expr = cmd.substring(0, cmd.length-2);
 				expr = freemarker._v(expr);
 				parts.push("if (" + expr + ") {");
 			} else if (cmd.indexOf('?size')>=0) {
 				var pos = cmd.indexOf('?size');
-				var expr = freemarker._v(cmd.substring(0, pos)) + '.length' + cmd.substring(pos+5);
+				var expr = freemarker._v(cmd.substring(0, pos)) + '.length' +
+				cmd.substring(pos+5);
 				parts.push("if (" + expr + ") {");
 			} else {
-				parts.push("if (" + cmd + ") {");
+				parts.push("if (" + freemarker._v(cmd) + ") {");
 			}
+
+			return true;
 		}},
-		'endif': {start:'</#if', end:'>', process:function(parts, cmd) {
+		
+		'endif': {start:'</#if', end:'>', process:function(parts, cmd, template) {
 			parts.push("}");
+
+			return true;
 		}},
-		'else': {start:'<#else', end:'>', process:function(parts, cmd) {
+
+		'else': {start:'<#else', end:'>', process:function(parts, cmd, template) {
 			parts.push("} else {");
+
+			return true;
 		}},
-		'list': {start:'<#list', end:'>', process:function(parts, cmd) {
+
+		'list': {start:'<#list', end:'>', process:function(parts, cmd, template) {
 			// <#list envelopes as envelope >
 			var match = cmd.match(/\s*(\S*)\s*as\s*(\S*)\s*/);
 			if (match) {
 				parts.push("for (var " + match[2] + "_index in " + freemarker._v(match[1]) + ")");
 			}
 			parts.push("{");
-            if (match) {
-                parts.push(freemarker._v(match[2]) + "=" + freemarker._v(match[1]) + "[" + match[2] + "_index];");
-            }
+            		if (match) {
+                		parts.push(freemarker._v(match[2]) + "=" + freemarker._v(match[1]) + "[" + match[2] + "_index];");
+            		}
+
+			return true;
 		}},
-		'endlist': {start:'</#list', end:'>', process:function(parts, cmd) {			
+
+		'endlist': {start:'</#list', end:'>', process:function(parts, cmd, template) {
 			parts.push("}");
+
+			return true;
+		}},
+
+		'include': {start:'<#include ', end:'>', process:function(parts, cmd, template) {
+			cmd_length = cmd.length;
+			
+			console.log(11 + cmd_length);
+			
+			cmd = cmd.replace(/\s/g, "");
+			cmd = cmd.replace(/\"/g, "");
+			var include = fs.readFileSync(path.resolve(__dirname, cmd), "utf8");
+			template.engine = template.engine.slice(0, template.pos) + include + template.engine.slice(template.pos+11+cmd_length);
+
+			return false;
 		}}
+
 	},
 	_o : function(cmd) {
 		return "p.push(\"" + escape(cmd) + "\");";
@@ -93,15 +127,16 @@ var freemarker = {
 		}
 		return buf.join('');
 	},
-	nextToken: function(template, pos) {
+
+	nextToken: function(template) {
 		var newPos;
 		var endPos;
 		var found={};
 		for (var i in this.symbols) {
 			var symbol = this.symbols[i];
-			var n = template.indexOf(symbol.start, pos);
+			var n = template.engine.indexOf(symbol.start, template.pos);
 			if (n>=0 && (!found.symbol || n<found.newPos)) {
-				var e = template.indexOf(symbol.end, n);
+				var e = template.engine.indexOf(symbol.end, n);
 				if (e>=0) {
 					found.newPos = n;
 					found.endPos = e;
@@ -112,51 +147,60 @@ var freemarker = {
 		}
 		return found;
 	},
+
 	create: function(template) {
 		var parts = [];
 		parts.push("var p=[];");
-		var pos=0;
-		while (pos>=0) {
-			var token = this.nextToken(template, pos);
+		var move_pos=true;
+		
+		while (template.pos>=0) {
+			var token = this.nextToken(template);
 			if (!token.symbol) {
-				parts.push(this._o(template.substring(pos)));
+				parts.push(this._o(template.engine.substring(template.pos)));
 				break;
 			}
-			parts.push(this._o(template.substring(pos, token.newPos)));
+			
+			parts.push(this._o(template.engine.substring(template.pos, token.newPos)));
 			if (token.symbol.process) {
-				token.symbol.process(parts, template.substring(token.start, token.endPos));
+				move_pos = token.symbol.process(parts, template.engine.substring(token.start, token.endPos), template);
 			}
 			
-			pos = token.endPos+1;
+			if (move_pos == true) {
+				template.pos = token.endPos+1;
+			}
 		}
 		parts.push("this._out = unescape(p.join(''));");
 
 		var engine={
 			compiled:parts.join(''),
-			template:template
+			template:template.engine
 		};
 		//console.debug(parts.join('\n'));
 		return engine;
 	},
 
 	render: function(engine, context) {
-		if (typeof engine == "string" || engine instanceof String) {
-			engine = this.create(engine);
-		}
-		context = context || {};
-		context._fm_out = function(val){
+		var template = {
+							"engine"  : engine,
+							"context" : context || {},
+							"pos"     : 0
+		};
+		
+		engine = this.create(template);
+
+		template.context._fm_out = function(val){
 			if (typeof val == 'object'){
 				if (typeof val._render == 'function')
 					return val._render();
 				else if (val[0])
-					return val[0];				
+					return val[0];
 			} 
 
 			return val;
 		};
-		var vars = this._setlocalvarscode(context);
-		//(function(){eval(vars+engine.compiled);}).call(context);
+
+		var vars = this._setlocalvarscode(template.context);
 		(function(){eval(engine.compiled);}).call(context);
-		return context._out;
+		return template.context._out;
 	}
 }; 
