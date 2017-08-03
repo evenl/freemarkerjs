@@ -20,6 +20,7 @@ module.exports = {
 	// - directives:
 	// 		if, else, list 
 	// - size builtin for arrays
+	// - includes
 
 	// Usage:
 	// var engine = freemarker.create("Hello ${name}");
@@ -94,14 +95,13 @@ module.exports = {
 		}},
 
 		'include': {start:'<#include ', end:'>', process:function(parts, cmd, template) {
-			cmd_length = cmd.length;
-			
-			console.log(11 + cmd_length);
+			cmd_length    = cmd.length + 1;
+			symbol_length = this.start.length + this.end.length + 1;
 			
 			cmd = cmd.replace(/\s/g, "");
 			cmd = cmd.replace(/\"/g, "");
-			var include = fs.readFileSync(path.resolve(__dirname, cmd), "utf8");
-			template.engine = template.engine.slice(0, template.pos) + include + template.engine.slice(template.pos+11+cmd_length);
+			include = fs.readFileSync(path.resolve(__dirname, cmd), "utf8");
+			template.engine = template.engine.slice(0, template.pos) + include + template.engine.slice(template.pos + 1 + symbol_length + cmd_length);
 
 			return false;
 		}}
