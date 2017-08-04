@@ -1,24 +1,24 @@
-Solarsystem name:     SOLAR SYSTEM
+Solarsystem name:     Solar System
 Solarsystem location: Orion Arm of the Milky Way
 Solarsystem age:      5 billion years
 
 The planets in our solarsystem:
 
-MERCURY
+There are 7 letters in MERCURY
 
-VENUS
+There are 5 letters in VENUS
 
-EARTH
+There are 5 letters in EARTH
 
-MARS
+There are 4 letters in MARS
 
-JUPITER
+There are 7 letters in JUPITER
 
-SATURN
+There are 6 letters in SATURN
 
-URANUS
+There are 6 letters in URANUS
 
-NEPTUNE
+There are 7 letters in NEPTUNE
 
 
 Inner plannets data:

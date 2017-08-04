@@ -21,6 +21,8 @@ module.exports = {
 	// 		if, else, list 
 	// - size builtin for arrays
 	// - includes
+	// - built-ins
+	//		toUpperCase, toLowerCase, capitalize, length
 
 	// Usage:
 	// var engine = freemarker.create("Hello ${name}");
@@ -113,6 +115,17 @@ module.exports = {
 		},
 		'lower_case': function(cmd) {
 			return cmd.cmd = cmd.cmd + ".toLowerCase()";
+		},
+		'capitalize' : function(cmd) {
+			return cmd.cmd = cmd.cmd + ".toLowerCase().replace( /\\b./g, function(a){ return a.toUpperCase(); })";
+		},
+		/*'left_pad' : function(cmd) {
+			var str = "var padding = new Array(" + cmd.param + "+ 1).join(\"0\");";
+			str = str + "(padding + " + cmd.cmd + ").slice(-padding.length);";
+			return cmd.cmd = str;
+		}*/
+		'length' : function(cmd) {
+			return cmd.cmd = cmd.cmd + ".length";
 		}
 	},
 	_o : function(cmd) {
@@ -138,10 +151,19 @@ module.exports = {
 	
 	splitCmdAndBuiltin: function(cmd) {
 		var res = cmd.split("?");
-		return {
+		if (res[1] == undefined) {
+			return {
 				cmd:     res[0],
-				builtin: res[1]
-		};
+				builtin: undefined,
+				param:   undefined
+			};
+		} else {
+			return {
+				cmd:     res[0],
+				builtin: res[1].substring(0, res[1].lastIndexOf("(") == -1 ? res[1].length : res[1].lastIndexOf("(")), 
+				param:   res[1].substring(res[1].lastIndexOf("(")+1,res[1].lastIndexOf(")")) || undefined
+			};
+		}
 	},
 
 	nextToken: function(template) {
