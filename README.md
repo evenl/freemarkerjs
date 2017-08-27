@@ -6,9 +6,10 @@ FreemarkerJs is a javascript implementation of the Freemarker (http://freemarker
   - basic interpolations
   - directives:
     - `#if`
-    - `#elseif`
-    - `#else`
+      - `#elseif`
+      - `#else`
     - `#list`
+      - `#else`
     - `#include`
   - size builtin for arrays
   - comments `<#-- -->`
@@ -32,22 +33,19 @@ parser.render("Hello ${name}", {name:'Bob'});
   - directives: http://freemarker.sourceforge.net/docs/ref_directives.html
     - `#assign`
     - `#attempt`
-    - `#break`
-    - `#case`
     - `#compress`
     - `#default`
     - `#escape`
+      - `#noescape`
     - `#fallback`
     - `#function`
     - `#flush`
     - `#global`
-    - `#include`
     - `#import`
     - `#local`
     - `#lt`
     - `#macro`
     - `#nested`
-    - `#noescape`
     - `#nt`
     - `#recover`
     - `#recurse`
@@ -56,6 +54,8 @@ parser.render("Hello ${name}", {name:'Bob'});
     - `#setting`
     - `#stop`
     - `#switch`
+      - `#case`
+      - `#break`
     - `#t`
     - `#visit`
 

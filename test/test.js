@@ -147,6 +147,15 @@ describe('list', function () {
       }
     }])
   })
+  it('iterate with else', function () {
+    tester([{
+      template: '<#list planets as planet>${planet?length} - ${planet} |<#else>Fooo</#list>',
+      output: 'Fooo',
+      data: {
+        planets: []
+      }
+    }])
+  })
 })
 
 describe('include', function () {

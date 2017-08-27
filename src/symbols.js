@@ -6,13 +6,13 @@ function condition (type, parts, cmd, template) {
   if (cmd.indexOf('??') >= 0) {
     let expr = cmd.substring(0, cmd.length - 2)
     expr = utils._v(expr)
-    parts.push(`${type} (${expr}) {`)
+    parts.push(`${type} (${expr}) { {`)
   } else if (cmd.indexOf('?size') >= 0) {
     const pos = cmd.indexOf('?size')
     const expr = `${utils._v(cmd.substring(0, pos))}.length${cmd.substring(pos + 5)}`
-    parts.push(`${type} (${expr}) {`)
+    parts.push(`${type} (${expr}) { {`)
   } else {
-    parts.push(`${type} (${utils._v(cmd)}) {`)
+    parts.push(`${type} (${utils._v(cmd)}) { {`)
   }
   return true
 }
@@ -37,7 +37,7 @@ module.exports = [
     start: '</#if',
     end: '>',
     process (parts, cmd, template) {
-      parts.push('}')
+      parts.push('} }')
       return true
     }
   },
@@ -45,14 +45,14 @@ module.exports = [
     start: '<#elseif',
     end: '>',
     process (parts, cmd, template) {
-      return condition('} else if', parts, cmd, template)
+      return condition('} } else if', parts, cmd, template)
     }
   },
   {
     start: '<#else',
     end: '>',
     process (parts, cmd, template) {
-      parts.push('} else {')
+      parts.push('} } else { {')
       return true
     }
   },
@@ -62,6 +62,7 @@ module.exports = [
     process (parts, cmd, template) {
       // <#list envelopes as envelope >
       const match = cmd.match(/\s*(\S*)\s*as\s*(\S*)\s*/)
+      parts.push(`if (${utils._v(match[1])}.length > 0) {`)
       if (match) {
         parts.push(`for (var ${match[2]}_index in ${utils._v(match[1])})`)
       }
@@ -76,7 +77,7 @@ module.exports = [
     start: '</#list',
     end: '>',
     process (parts, cmd, template) {
-      parts.push('}')
+      parts.push('} }')
       return true
     }
   },
