@@ -20,7 +20,8 @@ FreemarkerJs is a javascript implementation of the Freemarker (http://freemarker
 
 ## Usage:
 ```js
-freemarker.render("Hello ${name}", {name:'Bob'});
+const parser = require('freemarkerjs').parser
+parser.render("Hello ${name}", {name:'Bob'});
 ```
 
 ## TODO:
@@ -28,7 +29,7 @@ freemarker.render("Hello ${name}", {name:'Bob'});
   - null resistance in above expressions if in parenthesis
   - support methods, i.e. `${avg(3, 5)}`
   - alternative syntax if starts with `[#ftl]`
-  - directives ``, `switch`, `case`, `default`, `break`, `stop`, `compress`, `noparse`, `assign`
+  - directives `switch`, `case`, `default`, `break`, `stop`, `compress`, `noparse`, `assign`
 see http://freemarker.sourceforge.net/docs/ref_directives.html
   - string builtin for booleans, i.e. `boolean?string("yes", "no")`
   - `t`, `lt`, `rt`, `nt` directives (or atleast ignore them)
