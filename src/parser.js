@@ -33,11 +33,11 @@ class Parser {
     for (const symbol of symbols) {
       const n = template.engine.indexOf(symbol.start, template.pos)
       if (n >= 0 && (!found.symbol || n < found.newPos)) {
-        const e = template.engine.indexOf(symbol.end, n)
+        const e = template.engine.indexOf(symbol.end, n) + (symbol.end.length - 1)
         if (e >= 0) {
           found.newPos = n
           found.endPos = e
-          found.start = n + symbol.start.length
+          found.startPos = n + symbol.start.length
           found.symbol = symbol
         }
       }
@@ -59,11 +59,11 @@ class Parser {
 
       parts.push(utils._o(template.engine.substring(template.pos, token.newPos)))
       if (token.symbol.process) {
-        const cmd = this.splitCmdAndBuiltin(template.engine.substring(token.start, token.endPos))
+        const cmd = this.splitCmdAndBuiltin(template.engine.substring(token.startPos, token.endPos))
         if (cmd.builtin !== undefined) {
           builtin[cmd.builtin](cmd)
         }
-        movePos = token.symbol.process(parts, cmd.cmd, template, dir)
+        movePos = token.symbol.process.call(token, parts, cmd.cmd, template, dir)
       }
 
       if (movePos === true) {

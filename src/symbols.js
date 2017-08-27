@@ -82,17 +82,8 @@ module.exports = [
   },
   {
     start: '<#--',
-    end: '',
+    end: '-->',
     process (parts, cmd, template) {
-      parts.push('/*')
-      return true
-    }
-  },
-  {
-    start: '--',
-    end: '>',
-    process (parts, cmd, template) {
-      parts.push('*/')
       return true
     }
   },
@@ -101,7 +92,7 @@ module.exports = [
     end: '>',
     process (parts, cmd, template, dir) {
       const cmdLength = cmd.length + 1
-      const symbolLength = this.start.length + this.end.length + 1
+      const symbolLength = this.symbol.start.length + this.symbol.end.length + 1
 
       cmd = cmd.replace(/\s/g, '')
       cmd = cmd.replace(/"/g, '')

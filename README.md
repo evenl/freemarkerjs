@@ -5,14 +5,13 @@ FreemarkerJs is a javascript implementation of the Freemarker (http://freemarker
 ## Currently supports:
   - basic interpolations
   - directives:
-    - `if`
-    - `elseif`
-    - `else`
-    - `list`
-    - `include`
+    - `#if`
+    - `#elseif`
+    - `#else`
+    - `#list`
+    - `#include`
   - size builtin for arrays
-  - comments
-  - includes
+  - comments `<#-- -->`
   - built-ins:
     - `toUpperCase`
     - `toLowerCase`

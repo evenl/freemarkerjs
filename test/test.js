@@ -34,11 +34,18 @@ describe('property', function () {
 describe('comment', function () {
   it('should be removed', function () {
     tester([{
+      template: '<#-- -->a <#-- ${foo} -->a ',
+      output: 'a a ',
+      data: {}
+    }, {
+      template: ' <#-- ${foo} --> ',
+      output: '  ',
+      data: {}
+    }, {
       template: '<#-- ${foo} -->',
       output: '',
       data: {}
-    }])
-    tester([{
+    }, {
       template: `<#--
 
       csdcsdc
