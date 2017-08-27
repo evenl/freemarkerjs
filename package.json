@@ -1,0 +1,44 @@
+{
+  "name": "freemarker",
+  "version": "1.0.0",
+  "description": "FreemarkerJs is a javascript implementation of the Freemarker",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha test",
+    "lint": "eslint .",
+    "watch": "npm run test -- --watch ./src --growl"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/armano2/freemarkerjs.git"
+  },
+  "keywords": [
+    "freemarker",
+    "js",
+    "fmpp"
+  ],
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "author": "Armano",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/armano2/freemarkerjs/issues"
+  },
+  "homepage": "https://github.com/armano2/freemarkerjs#readme",
+  "devDependencies": {
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^8.0.25",
+    "assert": "^1.4.1",
+    "eslint": "^4.5.0",
+    "eslint-config-airbnb-base": "^11.3.2",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-mocha": "^4.11.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "jsesc": "^2.5.1",
+    "mocha": "^3.5.0"
+  }
+}
