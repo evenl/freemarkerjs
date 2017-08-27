@@ -99,13 +99,13 @@ module.exports = [
   {
     start: '<#include ',
     end: '>',
-    process (parts, cmd, template) {
+    process (parts, cmd, template, dir) {
       const cmdLength = cmd.length + 1
       const symbolLength = this.start.length + this.end.length + 1
 
       cmd = cmd.replace(/\s/g, '')
       cmd = cmd.replace(/"/g, '')
-      const include = fs.readFileSync(path.resolve(__dirname, cmd), 'utf8')
+      const include = fs.readFileSync(path.resolve(dir, cmd), 'utf8')
       template.engine = template.engine.slice(0, template.pos) + include + template.engine.slice(template.pos + 1 + symbolLength + cmdLength)
       return false
     }

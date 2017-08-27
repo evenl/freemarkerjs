@@ -45,7 +45,7 @@ class Parser {
     return found
   }
 
-  create (template) {
+  create (template, dir) {
     const parts = []
     parts.push('var p=[];')
     let movePos = true
@@ -63,7 +63,7 @@ class Parser {
         if (cmd.builtin !== undefined) {
           builtin[cmd.builtin](cmd)
         }
-        movePos = token.symbol.process(parts, cmd.cmd, template)
+        movePos = token.symbol.process(parts, cmd.cmd, template, dir)
       }
 
       if (movePos === true) {
@@ -80,14 +80,14 @@ class Parser {
     return engine
   }
 
-  render (engine, context) {
+  render (engine, context, dir) {
     const template = {
       engine,
       context: context || {},
       pos: 0
     }
 
-    engine = this.create(template)
+    engine = this.create(template, dir)
 
     /* const vars = */ this._setlocalvarscode(template.context);
     // console.log(vars)
@@ -97,4 +97,5 @@ class Parser {
     return template.context._out
   }
 }
+
 module.exports = new Parser()

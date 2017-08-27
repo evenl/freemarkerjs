@@ -1,11 +1,12 @@
 const assert = require('assert')
 const parser = require('../src').parser
+const fs = require('fs')
 
 /* eslint-disable no-template-curly-in-string */
 
 function tester (items) {
   for (const item of items) {
-    assert.equal(item.output, parser.render(item.template, item.data))
+    assert.equal(item.output, parser.render(item.template, item.data, item.directory || __dirname))
   }
 }
 
@@ -34,6 +35,15 @@ describe('comment', function () {
   it('should be removed', function () {
     tester([{
       template: '<#-- ${foo} -->',
+      output: '',
+      data: {}
+    }])
+    tester([{
+      template: `<#--
+
+      csdcsdc
+
+      -->`,
       output: '',
       data: {}
     }])
@@ -128,6 +138,16 @@ describe('list', function () {
           'Neptune'
         ]
       }
+    }])
+  })
+})
+
+describe('include', function () {
+  it('should include', function () {
+    tester([{
+      template: fs.readFileSync('./test/include/test.ftl', 'utf8'),
+      output: fs.readFileSync('./test/include/test_output.txt', 'utf8'),
+      data: require('./include/test.json')
     }])
   })
 })

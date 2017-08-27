@@ -9,6 +9,7 @@ FreemarkerJs is a javascript implementation of the Freemarker (http://freemarker
     - `elseif`
     - `else`
     - `list`
+    - `include`
   - size builtin for arrays
   - comments
   - includes
@@ -29,10 +30,37 @@ parser.render("Hello ${name}", {name:'Bob'});
   - null resistance in above expressions if in parenthesis
   - support methods, i.e. `${avg(3, 5)}`
   - alternative syntax if starts with `[#ftl]`
-  - directives `switch`, `case`, `default`, `break`, `stop`, `compress`, `noparse`, `assign`
-see http://freemarker.sourceforge.net/docs/ref_directives.html
+  - directives: http://freemarker.sourceforge.net/docs/ref_directives.html
+    - `#assign`
+    - `#attempt`
+    - `#break`
+    - `#case`
+    - `#compress`
+    - `#default`
+    - `#escape`
+    - `#fallback`
+    - `#function`
+    - `#flush`
+    - `#global`
+    - `#include`
+    - `#import`
+    - `#local`
+    - `#lt`
+    - `#macro`
+    - `#nested`
+    - `#noescape`
+    - `#nt`
+    - `#recover`
+    - `#recurse`
+    - `#return`
+    - `#rt`
+    - `#setting`
+    - `#stop`
+    - `#switch`
+    - `#t`
+    - `#visit`
+
   - string builtin for booleans, i.e. `boolean?string("yes", "no")`
-  - `t`, `lt`, `rt`, `nt` directives (or atleast ignore them)
   - Remove deprecated `escape` / `unescape`
 
 ## Based On:

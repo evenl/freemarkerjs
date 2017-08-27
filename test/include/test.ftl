@@ -7,4 +7,4 @@ The planets in our solarsystem:
 There are ${planet?length} letters in ${planet?upper_case}
 </#list>
 
-<#include "./tests/test_include.ftl">
+<#include "./include/test_include.ftl">
