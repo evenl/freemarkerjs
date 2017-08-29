@@ -1,5 +1,5 @@
 const assert = require('assert')
-const parser = require('../src').parser
+const parser = require('../_src').parser
 const fs = require('fs')
 
 /* eslint-disable no-template-curly-in-string */
