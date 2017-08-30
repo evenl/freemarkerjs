@@ -7,4 +7,12 @@ The planets in our solarsystem:
 There are ${planet?length} letters in ${planet?upper_case}
 </#list>
 
-<#include "./tests/test_include.ftl">
+<#include "./include/test_include.ftl">
+
+Inner plannets data:
+<#list planet_data as data>
+Name:   ${data.name?lower_case}
+Radius: ${data.radius}
+Mass:   ${data.mass}
+Volume: ${data.volume}
+</#list>
